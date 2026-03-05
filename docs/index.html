@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vol Based High Low Table</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Courier New',Courier,monospace;background:#0a0a0a;color:#c8c8c8;min-height:100vh}
+header{padding:24px 32px 16px;border-bottom:1px solid #1a1a1a;display:flex;justify-content:space-between;align-items:flex-end}
+.title{font-size:20px;font-weight:700;color:#e8e8e8;letter-spacing:1px}
+.subtitle{font-size:11px;color:#555;letter-spacing:1.5px;margin-top:4px}
+.hdr-right{text-align:right}
+.week-label{font-size:14px;color:#e8e8e8;font-weight:600}
+.week-nav{display:flex;gap:6px;padding:10px 32px;border-bottom:1px solid #1a1a1a;overflow-x:auto;background:#080808}
+.week-nav a{font-size:11px;padding:4px 12px;border-radius:3px;color:#555;text-decoration:none;border:1px solid transparent;white-space:nowrap}
+.week-nav a:hover{color:#c8c8c8;border-color:#333}
+.week-nav a.active{color:#3d8af7;border-color:#3d8af7;background:rgba(61,138,247,0.08)}
+main{max-width:800px;margin:0 auto;padding:32px}
+.loading{text-align:center;padding:80px 0;font-size:13px;color:#555}
+.error{background:rgba(214,48,49,0.08);border:1px solid rgba(214,48,49,0.2);border-radius:6px;padding:20px;font-size:13px;color:#ef4444;margin:40px 0;text-align:center}
+#report table{width:100%;border-collapse:collapse;font-size:15px;font-weight:600}
+#report thead th{padding:10px 16px;text-align:center;font-size:11px;letter-spacing:2px;text-transform:uppercase;border-bottom:2px solid #222;color:#666}
+#report thead th:first-child{text-align:left}
+#report tbody td{padding:10px 16px;text-align:center;border-bottom:1px solid #151515}
+#report tbody td:first-child{text-align:left}
+#report tbody tr:hover{background:#111}
+#report .separator td{padding:4px;border-bottom:1px solid #222}
+#report h2{font-size:14px;color:#e8e8e8;margin-bottom:16px;letter-spacing:1px}
+#report p{font-size:11px;color:#444;margin-top:16px}
+footer{max-width:800px;margin:0 auto;padding:20px 32px 40px;font-size:10px;color:#333;border-top:1px solid #151515}
+@media(max-width:640px){header{padding:16px;flex-direction:column;align-items:flex-start;gap:6px}.week-nav{padding:8px 16px}main{padding:16px}#report table{font-size:13px}#report thead th,#report tbody td{padding:8px 10px}}
+</style>
+</head>
+<body>
+
+<header>
+<div>
+<div class="title">Vol Based High Low Table</div>
+<div class="subtitle">IV/HV METHODOLOGY — WEEKLY REFERENCE</div>
+</div>
+<div class="hdr-right">
+<div class="week-label" id="weekLabel"></div>
+</div>
+</header>
+
+<nav class="week-nav" id="weekNav"></nav>
+
+<main>
+<div class="loading" id="loading">Loading...</div>
+<div id="report" style="display:none"></div>
+<div class="error" id="error" style="display:none"></div>
+</main>
+
+<footer>
+Vol Based High Low ranges derived from implied volatility and historical volatility. For reference only — not investment advice.
+</footer>
+
+<script>
+var INDEX_FILE = './weeks/index.json';
+var WEEKS_DIR = './weeks/';
+
+function getWeekParam() {
+  return new URLSearchParams(window.location.search).get('week');
+}
+
+function loadIndex() {
+  return fetch(INDEX_FILE)
+    .then(function(r) { return r.ok ? r.json() : Promise.reject(); })
+    .catch(function() { return []; });
+}
+
+function buildNav(weeks, active) {
+  var nav = document.getElementById('weekNav');
+  nav.innerHTML = '';
+  weeks.forEach(function(w) {
+    var a = document.createElement('a');
+    a.href = '?week=' + w;
+    a.textContent = w;
+    if (w === active) a.className = 'active';
+    nav.appendChild(a);
+  });
+}
+
+function loadWeek(week) {
+  var loading = document.getElementById('loading');
+  var report = document.getElementById('report');
+  var error = document.getElementById('error');
+  document.getElementById('weekLabel').textContent = week;
+
+  loading.style.display = 'block';
+  report.style.display = 'none';
+  error.style.display = 'none';
+
+  fetch(WEEKS_DIR + week + '.html')
+    .then(function(r) { if (!r.ok) throw new Error(); return r.text(); })
+    .then(function(html) {
+      report.innerHTML = html;
+      report.style.display = 'block';
+      loading.style.display = 'none';
+    })
+    .catch(function() {
+      error.textContent = 'No data for ' + week;
+      error.style.display = 'block';
+      loading.style.display = 'none';
+    });
+}
+
+loadIndex().then(function(weeks) {
+  var requested = getWeekParam();
+  var active = (requested && weeks.indexOf(requested) !== -1) ? requested : weeks[0];
+  buildNav(weeks, active);
+  if (active) loadWeek(active);
+});
+</script>
+
+</body>
+</html>
