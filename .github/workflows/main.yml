@@ -38,13 +38,18 @@ jobs:
           else
             cp "$LATEST_FILE" "$NEW_FILE"
             echo "Successfully created $NEW_FILE"
+            # 5. UPDATE INDEX.JSON
+            # We use jq to append the new week string and ensure the list is unique
+            # This assumes index.json is in the same folder (docs/weeks/)
+            jq ". += [\"$NEXT_WEEK\"] | unique" index.json > index.tmp.json && mv index.tmp.json index.json
+            echo "Updated index.json with $NEXT_WEEK"
           fi
 
       - name: Commit and Push changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/weeks/*.html
+          git add docs/weeks/*.html docs/weeks/index.json
           
           # Only commit if there are changes to avoid errors
           if git diff --staged --quiet; then
