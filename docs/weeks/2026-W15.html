@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vol Based High Low | Stocks</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:     #0a0c0f;
+    --bg2:    #0d1018;
+    --border: #1e2228;
+    --border2:#252b34;
+    --text:   #c8cdd6;
+    --muted:  #4a5260;
+
+    --hi2-bg: #0d2a1a; --hi2-fg: #3ddc84; --hi2-bd: #1a4a2e;
+    --hi1-bg: #0a1f14; --hi1-fg: #2ab865; --hi1-bd: #143324;
+    --lo1-bg: #2a0d0d; --lo1-fg: #e05555; --lo1-bd: #4a1a1a;
+    --lo2-bg: #1f0a0a; --lo2-fg: #c03030; --lo2-bd: #381414;
+
+    --yellow: #e8c840;
+    --silver: #8ab4d4;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 20px 40px;
+    gap: 24px;
+  }
+
+  .block {
+    width: 100%;
+    max-width: 720px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .block-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+
+  h2 {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .date-label {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  .table-wrap {
+    width: 100%;
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  thead tr {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border2);
+  }
+
+  th {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    text-align: right;
+    color: var(--muted);
+  }
+  th:first-child { text-align: left; }
+  th.hi2 { color: var(--hi2-fg); }
+  th.hi1 { color: var(--hi1-fg); opacity: 0.85; }
+  th.lo1 { color: var(--lo1-fg); opacity: 0.85; }
+  th.lo2 { color: var(--lo2-fg); }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #13171f; }
+
+  td {
+    padding: 11px 16px;
+    font-size: 12.5px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  td:first-child {
+    text-align: left;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+  }
+
+  tr.equity td:first-child    { color: var(--yellow); }
+  tr.commodity td:first-child  { color: var(--silver); }
+
+  td.hi2 { color: var(--hi2-fg); background: var(--hi2-bg); border-left: 1px solid var(--hi2-bd); }
+  td.hi1 { color: var(--hi1-fg); background: var(--hi1-bg); border-left: 1px solid var(--hi1-bd); }
+  td.lo1 { color: var(--lo1-fg); background: var(--lo1-bg); border-right: 1px solid var(--lo1-bd); }
+  td.lo2 { color: var(--lo2-fg); background: var(--lo2-bg); border-right: 1px solid var(--lo2-bd); }
+  td.na  { color: var(--muted); background: #0d0f12; text-align: center; font-size: 10px; letter-spacing: 0.06em; }
+
+  tr.sep td { padding: 0; height: 1px; background: var(--border2); }
+
+  .divider {
+    width: 100%;
+    max-width: 720px;
+    height: 1px;
+    background: var(--border2);
+  }
+</style>
+</head>
+<body>
+
+<!-- INTRADAY: 30 Mar 2026 -->
+<div class="block">
+  <div class="block-header">
+    <h2>Intraday</h2>
+    <span class="date-label">30 Mar 2026</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th class="lo2">Low 2</th>
+          <th class="lo1">Low 1</th>
+          <th class="hi1">High 1</th>
+          <th class="hi2">High 2</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="equity"><td>NVDA</td><td class="lo2">159.51</td><td class="lo1">165.51</td><td class="hi1">169.51</td><td class="hi2">175.53</td></tr>
+        <tr class="equity"><td>AMZN</td><td class="lo2">190.09</td><td class="lo1">197.01</td><td class="hi1">201.64</td><td class="hi2">208.59</td></tr>
+        <tr class="equity"><td>AAPL</td><td class="lo2">239.89</td><td class="lo1">246.56</td><td class="hi1">251.02</td><td class="hi2">257.71</td></tr>
+        <tr class="equity"><td>GOOG</td><td class="lo2">262.16</td><td class="lo1">270.84</td><td class="hi1">276.64</td><td class="hi2">285.36</td></tr>
+        <tr class="equity"><td>META</td><td class="lo2">498.11</td><td class="lo1">518.77</td><td class="hi1">532.58</td><td class="hi2">553.33</td></tr>
+        <tr class="equity"><td>MSFT</td><td class="lo2">343.59</td><td class="lo1">353.46</td><td class="hi1">360.05</td><td class="hi2">369.95</td></tr>
+        <tr class="equity"><td>TSLA</td><td class="lo2">341.61</td><td class="lo1">356.74</td><td class="hi1">366.85</td><td class="hi2">382.05</td></tr>
+        <tr class="equity"><td>TSM</td> <td class="lo2">307.05</td><td class="lo1">321.78</td><td class="hi1">331.63</td><td class="hi2">346.43</td></tr>
+        <tr class="equity"><td>AMD</td> <td class="lo2">188.51</td><td class="lo1">198.59</td><td class="hi1">205.33</td><td class="hi2">215.47</td></tr>
+        <tr class="equity"><td>PLTR</td><td class="lo2">134.05</td><td class="lo1">140.79</td><td class="hi1">145.30</td><td class="hi2">152.07</td></tr>
+        <tr class="sep"><td colspan="5"></td></tr>
+        <tr class="commodity"><td>XAU</td><td class="lo2">4,390.41</td><td class="lo1">4,565.00</td><td class="hi1">4,681.66</td><td class="hi2">4,857.00</td></tr>
+        <tr class="commodity"><td>XAG</td><td class="lo2">65.00</td>   <td class="lo1">70.01</td>   <td class="hi1">73.36</td>   <td class="hi2">78.41</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<hr style="border: 0; height: 1px; background: #333; margin: 40px 0;">
+  
+  <!-- WEEKLY: 30 Mar – 02 Apr 2026 -->
+<div class="block">
+  <div class="block-header">
+    <h2>Weekly</h2>
+    <span class="date-label">30 Mar – 02 Apr 2026</span>
+  </div>
+  <hr style="border:none; border-top:1px solid #252b34; margin:0;">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th class="lo2">Low 2</th>
+          <th class="lo1">Low 1</th>
+          <th class="hi1">High 1</th>
+          <th class="hi2">High 2</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="equity"><td>NVDA</td><td class="lo2">160.28</td><td class="lo1">162.64</td><td class="hi1">172.40</td><td class="hi2">174.76</td></tr>
+        <tr class="equity"><td>AMZN</td><td class="lo2">190.76</td><td class="lo1">193.56</td><td class="hi1">205.12</td><td class="hi2">207.92</td></tr>
+        <tr class="equity"><td>AAPL</td><td class="lo2">240.27</td><td class="lo1">243.05</td><td class="hi1">254.55</td><td class="hi2">257.33</td></tr>
+        <tr class="equity"><td>GOOG</td><td class="lo2">263.07</td><td class="lo1">266.55</td><td class="hi1">280.97</td><td class="hi2">284.45</td></tr>
+        <tr class="equity"><td>META</td><td class="lo2">499.88</td><td class="lo1">508.30</td><td class="hi1">543.14</td><td class="hi2">551.56</td></tr>
+        <tr class="equity"><td>MSFT</td><td class="lo2">344.31</td><td class="lo1">348.37</td><td class="hi1">365.17</td><td class="hi2">369.23</td></tr>
+        <tr class="equity"><td>TSLA</td><td class="lo2">343.37</td><td class="lo1">349.39</td><td class="hi1">374.27</td><td class="hi2">380.29</td></tr>
+        <tr class="equity"><td>TSM</td> <td class="lo2">309.89</td><td class="lo1">315.38</td><td class="hi1">338.10</td><td class="hi2">343.59</td></tr>
+        <tr class="equity"><td>AMD</td> <td class="lo2">189.71</td><td class="lo1">193.72</td><td class="hi1">210.26</td><td class="hi2">214.27</td></tr>
+        <tr class="equity"><td>PLTR</td><td class="lo2">134.89</td><td class="lo1">137.55</td><td class="hi1">148.57</td><td class="hi2">151.23</td></tr>
+        <tr class="sep"><td colspan="5"></td></tr>
+        <tr class="commodity"><td>XAU</td><td class="lo2">4,416.45</td><td class="lo1">4,484.01</td><td class="hi1">4,763.39</td><td class="hi2">4,830.95</td></tr>
+        <tr class="commodity"><td>XAG</td><td class="lo2">66.09</td>   <td class="lo1">67.92</td>   <td class="hi1">75.49</td>   <td class="hi2">77.32</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<hr style="border: 0; height: 1px; background: #333; margin: 40px 0;">
+  
+<!-- INFERRED WEEKLY PATH: 30 Mar – 02 Apr 2026 -->
+<div class="block">
+  <div class="block-header">
+    <h2>Inferred Path</h2>
+    <span class="date-label">30 Mar – 02 Apr 2026</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align:left;">Day</th>
+          <th style="text-align:center;">Direction</th>
+          <th style="text-align:left;">Bias</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align:left; font-family:'Space Mono',monospace; font-weight:700; font-size:11.5px; color:#e8c840;">Mon</td>
+          <td style="text-align:center; color:#2ab865; font-weight:700; font-size:13px;">↑↓</td>
+          <td style="font-size:11px; color:#c8cdd6;">Cautious buy-the-dip · watch centroid 6,417–6,422 after 11AM</td>
+        </tr>
+        <tr>
+          <td style="text-align:left; font-family:'Space Mono',monospace; font-weight:700; font-size:11.5px; color:#e8c840;">Tue</td>
+          <td style="text-align:center; color:#e05555; font-weight:700; font-size:13px;">↓↑</td>
+          <td style="font-size:11px; color:#c8cdd6;">Forced optimism · fragile · false-breakout risk · <span style="color:#f0c040;">KEY RISK DAY</span> · significant move expected</td>
+        </tr>
+        <tr>
+          <td style="text-align:left; font-family:'Space Mono',monospace; font-weight:700; font-size:11.5px; color:#e8c840;">Wed</td>
+          <td style="text-align:center; color:#e05555; font-weight:700; font-size:13px;">↓</td>
+          <td style="font-size:11px; color:#c8cdd6;">Stress apex · choppy · not bullish · PMI release</td>
+        </tr>
+        <tr>
+          <td style="text-align:left; font-family:'Space Mono',monospace; font-weight:700; font-size:11.5px; color:#e8c840;">Thu</td>
+          <td style="text-align:center; color:#7090b0; font-weight:700; font-size:13px;">↔</td>
+          <td style="font-size:11px; color:#c8cdd6;">Early optimism possible · over-confidence triggers sell-offs · oscillating</td>
+        </tr>
+        <tr>
+          <td style="text-align:left; font-family:'Space Mono',monospace; font-weight:700; font-size:11.5px; color:#4a5260;">Fri</td>
+          <td style="text-align:center; color:#4a5260; font-weight:700; font-size:13px;">—</td>
+          <td style="font-size:11px; color:#4a5260;">Market closed · Good Friday / NFP</td>
+        </tr>
+        <tr style="border-top:1px solid #252b34;">
+          <td colspan="3" style="padding:10px 16px; font-size:10px; color:#4a5260;">
+            ⚠ Bounce only if SPX closes above <span style="color:#2ab865;">6,583</span> · below <span style="color:#e05555;">6,265–6,270</span> → 6,210 left-tail · weekly range SPX <span style="color:#e05555;">6,198–6,254</span> / <span style="color:#3ddc84;">6,483–6,539</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+
+
+</body>
+</html>
